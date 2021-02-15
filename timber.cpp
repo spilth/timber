@@ -92,6 +92,10 @@ int main() {
     Text messageText;
     Text scoreText;
 
+    RectangleShape scoreBackground(sf::Vector2f(700, 120));
+    scoreBackground.setPosition(9, 18);
+    scoreBackground.setFillColor(Color(0, 0, 0, 128));
+
     Font font;
     font.loadFromFile("fonts/KOMIKAP_.ttf");
 
@@ -420,6 +424,7 @@ int main() {
 
         window.draw(spriteBee);
 
+        window.draw(scoreBackground);
         window.draw(scoreText);
 
         window.draw(timeBar);
