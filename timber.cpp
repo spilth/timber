@@ -6,6 +6,8 @@ using namespace sf;
 
 void updateBranches(int seed);
 
+void updateScoreText(int score, Text &scoreText);
+
 const int NUM_BRANCHES = 6;
 Sprite branches[NUM_BRANCHES];
 
@@ -113,7 +115,7 @@ int main() {
     Texture textureBranch;
     textureBranch.loadFromFile("graphics/branch.png");
 
-    for (auto & branch : branches) {
+    for (auto &branch : branches) {
         branch.setTexture(textureBranch);
         branch.setPosition(-2000, -2000);
         branch.setOrigin(220, 20);
@@ -206,6 +208,8 @@ int main() {
             paused = false;
 
             score = 0;
+            updateScoreText(score, scoreText);
+
             timeRemaining = 6;
 
             for (int i = 1; i < NUM_BRANCHES; i++) {
@@ -226,6 +230,8 @@ int main() {
                 playerSide = side::RIGHT;
 
                 score++;
+                updateScoreText(score, scoreText);
+
                 timeRemaining += (2 / score) + .15;
                 spriteAxe.setPosition(AXE_POSITION_RIGHT, spriteAxe.getPosition().y);
                 spritePlayer.setPosition(1200, 720);
@@ -243,6 +249,8 @@ int main() {
                 playerSide = side::LEFT;
 
                 score++;
+                updateScoreText(score, scoreText);
+
                 timeRemaining += (2 / score) + .15;
                 spriteAxe.setPosition(AXE_POSITION_LEFT, spriteAxe.getPosition().y);
                 spritePlayer.setPosition(580, 720);
@@ -346,11 +354,6 @@ int main() {
                 }
             }
 
-            // TODO: Only update this when the score changes
-            std::stringstream ss;
-            ss << "Score = " << score;
-            scoreText.setString(ss.str());
-
             for (int i = 0; i < NUM_BRANCHES; i++) {
                 float height = i * 150;
                 if (branchPositions[i] == side::LEFT) {
@@ -404,7 +407,7 @@ int main() {
         window.draw(spriteCloud2);
         window.draw(spriteCloud3);
 
-        for (const auto & branch : branches) {
+        for (const auto &branch : branches) {
             window.draw(branch);
         }
 
@@ -429,6 +432,12 @@ int main() {
     }
 
     return 0;
+}
+
+void updateScoreText(int score, Text &scoreText) {
+    std::stringstream ss;
+    ss << "Score = " << score;
+    scoreText.setString(ss.str());
 }
 
 void updateBranches(int seed) {
