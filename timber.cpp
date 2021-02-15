@@ -41,9 +41,11 @@ int main() {
 
     Texture textureBee;
     textureBee.loadFromFile("graphics/bee.png");
+
     Sprite spriteBee;
     spriteBee.setTexture(textureBee);
     spriteBee.setPosition(0, 800);
+
     bool beeActive = false;
     float beeSpeed = 0.0f;
 
@@ -175,14 +177,17 @@ int main() {
     Sound outOfTime;
     outOfTime.setBuffer(ootBuffer);
 
+    Music music;
+    music.openFromFile("music/campfire.ogg");
+
+    music.setLoop(true);
+    music.play();
+    
     while (window.isOpen()) {
         while (window.pollEvent(event)) {
             if (event.type == Event::KeyReleased && !paused) {
-                // Listen for key presses again
                 acceptInput = true;
-                // hide the axe
-                spriteAxe.setPosition(2000,
-                                      spriteAxe.getPosition().y);
+                spriteAxe.setPosition(2000, spriteAxe.getPosition().y);
             }
 
             switch (event.type) {
@@ -216,19 +221,14 @@ int main() {
 
         if (acceptInput) {
             if (Keyboard::isKeyPressed(Keyboard::Right)) {
-                // Make sure the player is on the right
                 playerSide = side::RIGHT;
 
                 score++;
-                // Add to the amount of time remaining
                 timeRemaining += (2 / score) + .15;
-                spriteAxe.setPosition(AXE_POSITION_RIGHT,
-                                      spriteAxe.getPosition().y);
+                spriteAxe.setPosition(AXE_POSITION_RIGHT, spriteAxe.getPosition().y);
                 spritePlayer.setPosition(1200, 720);
-                // Update the branches
                 updateBranches(score);
 
-                // Set the log flying to the left
                 spriteLog.setPosition(810, 720);
                 logSpeedX = -5000;
                 logActive = true;
@@ -238,17 +238,14 @@ int main() {
             }
 
             if (Keyboard::isKeyPressed(Keyboard::Left)) {
-                // Make sure the player is on the left
                 playerSide = side::LEFT;
+
                 score++;
-                // Add to the amount of time remaining
                 timeRemaining += (2 / score) + .15;
-                spriteAxe.setPosition(AXE_POSITION_LEFT,
-                                      spriteAxe.getPosition().y);
+                spriteAxe.setPosition(AXE_POSITION_LEFT, spriteAxe.getPosition().y);
                 spritePlayer.setPosition(580, 720);
-                // update the branches
                 updateBranches(score);
-                // set the log flying
+
                 spriteLog.setPosition(810, 720);
                 logSpeedX = 5000;
                 logActive = true;
@@ -283,8 +280,7 @@ int main() {
 
                 beeActive = true;
             } else {
-                spriteBee.setPosition(spriteBee.getPosition().x - (beeSpeed * dt.asSeconds()),
-                                      spriteBee.getPosition().y);
+                spriteBee.setPosition(spriteBee.getPosition().x - (beeSpeed * dt.asSeconds()), spriteBee.getPosition().y);
 
                 if (spriteBee.getPosition().x < -100) {
                     beeActive = false;
@@ -334,8 +330,7 @@ int main() {
                 spriteCloud3.setPosition(-200, height);
                 cloud3Active = true;
             } else {
-                spriteCloud3.setPosition(spriteCloud3.getPosition().x + (cloud3Speed * dt.asSeconds()),
-                                         spriteCloud3.getPosition().y);
+                spriteCloud3.setPosition(spriteCloud3.getPosition().x + (cloud3Speed * dt.asSeconds()), spriteCloud3.getPosition().y);
 
                 if (spriteCloud3.getPosition().x > 1920) {
                     cloud3Active = false;
@@ -363,24 +358,16 @@ int main() {
 
             // Handle a flying log
             if (logActive) {
-                spriteLog.setPosition(
-                        spriteLog.getPosition().x +
-                        (logSpeedX * dt.asSeconds()),
+                spriteLog.setPosition(spriteLog.getPosition().x + (logSpeedX * dt.asSeconds()), spriteLog.getPosition().y + (logSpeedY * dt.asSeconds()));
 
-                        spriteLog.getPosition().y +
-                        (logSpeedY * dt.asSeconds()));
-                // Has the log reached the right hand edge?
                 if (spriteLog.getPosition().x < -100 ||
                     spriteLog.getPosition().x > 2000) {
-                    // Set it up ready to be a whole new log next frame
                     logActive = false;
                     spriteLog.setPosition(810, 720);
                 }
             }
 
-            // has the player been squished by a branch?
             if (branchPositions[5] == playerSide) {
-                // death
                 paused = true;
                 acceptInput = false;
 
@@ -393,6 +380,7 @@ int main() {
                 messageText.setOrigin(textRect.left + textRect.width / 2.0f, textRect.top + textRect.height / 2.0f);
                 messageText.setPosition(1920 / 2.0f, 1080 / 2.0f);
 
+                music.stop();
                 death.play();
             }
         }
